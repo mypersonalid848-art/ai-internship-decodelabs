@@ -43,6 +43,30 @@ python classification.py
 
 ---
 
+## Project 3: AI Recommendation Logic — Tech Stack Recommender
+
+A content-based recommendation engine that suggests the best-matching career paths based on a user's skills. Uses TF-IDF vectorization and Cosine Similarity to measure how closely a user's skill set aligns with different job roles.
+
+**Key Features:**
+- Takes user input (minimum 3 skills)
+- Converts skills and job requirements into numerical vectors (TF-IDF)
+- Calculates similarity scores using Cosine Similarity
+- Returns the Top 3 most relevant career paths with match percentage
+
+**Tech Used:** Python, pandas, scikit-learn
+
+**Files:**
+- `tech_stack_recommender.py` — main script
+- `raw_skills.csv` — dataset of job roles and required skills
+
+**How to Run:**
+```bash
+pip install pandas scikit-learn
+python tech_stack_recommender.py
+```
+
+---
+
 ## About Me
 
 **Rubayat** — AI Automation Freelancer, specializing in n8n workflows, chatbot development, and digital automation solutions.
