@@ -1,9 +1,3 @@
-# ============================================
-# Project 2: Data Classification Using AI
-# DecodeLabs Industrial Training Kit
-# Algorithm: K-Nearest Neighbors (KNN)
-# ============================================
-
 # --- Imports ---
 # datasets.load_iris -> gives us the built-in Iris dataset (no CSV needed)
 # train_test_split    -> splits data into training and testing sets
