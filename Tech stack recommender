@@ -1,0 +1,73 @@
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+
+def load_job_data(file_path):
+    # Read the CSV file that contains job roles and their required skills
+    data = pd.read_csv(file_path)
+    return data
+
+
+def get_user_skills():
+    # Ask the user to enter at least 3 skills, separated by commas
+    print("Enter at least 3 skills you know, separated by commas.")
+    print("Example: Python, Cloud Computing, Automation")
+    user_input = input("Your skills: ")
+
+    skills_list = [skill.strip() for skill in user_input.split(",")]
+    return skills_list
+
+
+def recommend_jobs(user_skills, job_data, top_n=3):
+    # Combine the job skills into one text string per job role
+    job_skills_text = job_data["skills"].tolist()
+
+    # Turn the user's skills into one text string (same format as job skills)
+    user_skills_text = " ".join(user_skills)
+
+    # Put the user's text at the start of the list, so we can compare it
+    # against every job role using the same vocabulary
+    all_text = [user_skills_text] + job_skills_text
+
+    # Convert all the text into numbers (TF-IDF vectors)
+    vectorizer = TfidfVectorizer()
+    tfidf_matrix = vectorizer.fit_transform(all_text)
+
+    # The first row is the user's vector, the rest are job vectors
+    user_vector = tfidf_matrix[0]
+    job_vectors = tfidf_matrix[1:]
+
+    # Calculate how similar the user's skills are to each job role
+    similarity_scores = cosine_similarity(user_vector, job_vectors)[0]
+
+    # Add the similarity scores to the job data
+    job_data = job_data.copy()
+    job_data["match_score"] = similarity_scores
+
+    # Sort jobs by score, highest first, and keep the top results
+    top_matches = job_data.sort_values(by="match_score", ascending=False).head(top_n)
+
+    return top_matches
+
+
+def display_results(top_matches):
+    print("\nTop recommended career paths for you:\n")
+
+    rank = 1
+    for index, row in top_matches.iterrows():
+        score_percent = round(row["match_score"] * 100, 1)
+        print(f"{rank}. {row['job_role']} - Match: {score_percent}%")
+        print(f"   Required skills: {row['skills']}")
+        rank += 1
+
+
+def main():
+    job_data = load_job_data("raw_skills.csv")
+    user_skills = get_user_skills()
+    top_matches = recommend_jobs(user_skills, job_data, top_n=3)
+    display_results(top_matches)
+
+
+if __name__ == "__main__":
+    main()
